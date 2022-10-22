@@ -1,0 +1,94 @@
+extends ./../layouts/header.pug
+
+
+block title
+    title= title 
+
+
+
+block cssLink
+    link(rel="stylesheet", href="/css/signup.css")
+
+
+
+block jsScript
+    script(src="/js/signin.js" defer) 
+
+
+
+block bodyContent
+    .signup-section
+        .wrapper
+            .signup-wrapper
+                div.social-icon
+                    i.fab.fa-twitter
+
+                h2 Join Twitter today
+
+                form(action='/signup', method="post" enctype="multipart/form-data")
+
+                    .signup-content 
+
+                        div
+                            label(for="firstName") First Name
+
+                            input#firstName(type="text", name="firstName" class="form-control" value= user ? user.firstName : '' required="")
+
+                            if error.firstName 
+                                p.error.firstName-error #{error.firstName.msg}
+
+                        div
+                            label(for="lastName") Last Name
+
+                            input#lastName(type="text", name="lastName" class="form-control" value= user ? user.lastName : '' required="")
+
+                            if error.lastName 
+                                p.error.lastName-error #{error.lastName.msg}
+
+                    .signup-content
+
+                        div 
+                            label(for="username") User Name
+
+                            input#username(type="text", name="username" class="form-control" value= user ? user.username : '' required="")
+
+                            if error.username 
+                                p.error.username-error #{error.username.msg}                             
+
+                        div 
+                            label(for="email") Email
+
+                            input#email(type="email", name="email" class="form-control" value= user ? user.email : '' required="")
+
+                            if error.email 
+                                p.error.email-error #{error.email.msg}
+
+                    .signup-content
+
+                        div 
+                            label(for="password")  Password
+
+                            input#password(type="password", name="password" class="form-control" value= user && !error.password && !error.confirmPassword ? user.password : '' required="")
+
+                            if error.password 
+                                p.error.password-error #{error.password.msg}
+
+
+                        div 
+                            label(for="confirmPassword")  Confirm password
+
+                            input#confirmPassword(type="password", name="confirmPassword" class="form-control" value= user && !error.password && !error.confirmPassword ? user.confirmPassword : '' required="")
+                            
+                            if error.confirmPassword 
+                                p.error.confirmPassword-error #{error.confirmPassword.msg}
+
+                    label(for="avatarProfile")  Profile Avatar
+
+                    input#avatarProfile(type="file", name="avatarProfile" class="form-control avatar-input" accept=".jpg, .jpeg, .png, .svg")
+                    if error.avatarProfile 
+                        p.error.confirmPassword-error #{error.avatarProfile.msg}
+                        
+                    input(type="submit", value="Sign Up" class="form-control signup-btn")
+
+                p.disclaim Already have an account? 
+                    a(href='/signin') sign in here
