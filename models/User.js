@@ -19,7 +19,7 @@ const userSchema = new Schema(
       type: String,
       required: true,
       trim: true,
-      minLength: 5,
+      minLength: 3,
       unique: true,
     },
     email: {
@@ -48,6 +48,23 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    status: {
+      type: String,
+      enum: ["unverified", "verified", "suspended"],
+      default: "unverified",
+    },
+    likes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Tweet",
+      },
+    ],
+    retweets: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Tweet",
+      },
+    ],
   },
   {
     timestamps: true,

@@ -1,0 +1,22 @@
+extends ./../../layouts/header.pug
+
+block title
+    title= title 
+
+block bodyContent
+    main 
+        .confirmation-section
+            .confirmation-inner.mx-auto
+            .mx-auto.text-center
+                h2 Thank You !
+            
+            .px-4.text-center
+                h3 A confirmation email was sent successfully !!
+                .w-10.text-center.d-flex.justify-content-center.align-items-center
+                p
+                    |We have sent email to 
+                    a #{email}
+                    |to verify your email address. After receiving the email follow the link provided to complete your registration.
+
+
+

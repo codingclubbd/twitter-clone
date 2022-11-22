@@ -1,4 +1,4 @@
-extends ./../layouts/header.pug
+extends ./../../layouts/header.pug
 
 
 block title
@@ -12,7 +12,7 @@ block cssLink
 
 
 block jsScript
-    script(src="/js/signin.js" defer) 
+    script(src="/js/signUp.js" defer) 
 
 
 
@@ -24,6 +24,8 @@ block bodyContent
                     i.fab.fa-twitter
 
                 h2 Join Twitter today
+                if error.common
+                    p.error.common-error #{error.common.message}
 
                 form(action='/signup', method="post" enctype="multipart/form-data")
 
@@ -68,7 +70,10 @@ block bodyContent
                         div 
                             label(for="password")  Password
 
-                            input#password(type="password", name="password" class="form-control" value= user && !error.password && !error.confirmPassword ? user.password : '' required="")
+                            .passwordContainer
+                                input#password(type="password", name="password" class="form-control" value= user && !error.password &&!error.confirmPassword ? user.password : '' required="")
+                                span#passwordEyeIcon
+                                    i.fas.fa-eye
 
                             if error.password 
                                 p.error.password-error #{error.password.msg}
@@ -77,10 +82,17 @@ block bodyContent
                         div 
                             label(for="confirmPassword")  Confirm password
 
-                            input#confirmPassword(type="password", name="confirmPassword" class="form-control" value= user && !error.password && !error.confirmPassword ? user.confirmPassword : '' required="")
+
+                            .passwordContainer
+                                input#confirmPassword(type="password", name="confirmPassword" class="form-control" value= user && !error.password &&!error.confirmPassword ? user.confirmPassword : '' required="")
+                                span#confirmPasswordEyeIcon
+                                    i.fas.fa-eye
+
+                           
                             
                             if error.confirmPassword 
                                 p.error.confirmPassword-error #{error.confirmPassword.msg}
+                    p.passErrors dfasdfadsfdsf
 
                     label(for="avatarProfile")  Profile Avatar
 
@@ -90,5 +102,5 @@ block bodyContent
                         
                     input(type="submit", value="Sign Up" class="form-control signup-btn")
 
-                p.disclaim Already have an account? 
-                    a(href='/signin') sign in here
+                p.disclaim.mt-3 Already have an account? 
+                    a(href='/signIn') sign in here

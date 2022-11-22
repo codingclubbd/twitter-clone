@@ -9,6 +9,9 @@ const {
 } = require("./middlewares/common/errorHandler");
 const cookieParser = require("cookie-parser");
 const authRouter = require("./routes/auth/authRoute");
+const homeRoute = require("./routes/home/homeRoute");
+const postRoute = require("./routes/APIs/postRoute");
+const { redisClient } = require("./utilities/cacheManager");
 
 // App Initialization and Config
 const app = express();
@@ -22,10 +25,13 @@ app.set("views", "views");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
-app.use(cookieParser());
+app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // Routes
 app.use(authRouter); // authentication route
+
+app.use("/posts", postRoute); // home router
+app.use("/", homeRoute); // home router
 
 // Not Found Handler
 app.use(notFoundHandler);
@@ -36,6 +42,7 @@ app.use(errorHandler);
 // Mongodb Connection
 async function twitter() {
   try {
+    await redisClient.connect();
     await mongoose.connect(process.env.DB_URI, {
       useUnifiedTopology: true,
       useNewUrlParser: true,

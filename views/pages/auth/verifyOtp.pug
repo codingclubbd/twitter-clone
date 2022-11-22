@@ -1,0 +1,53 @@
+extends ./../../layouts/header.pug
+
+
+block title
+    title= title 
+
+
+block cssLink
+    link(rel="stylesheet", href="/css/signIn.css")
+
+
+block jsScript
+    script(src="/js/verifyOtp.js" defer) 
+
+
+block bodyContent
+    .signIn-section
+        .wrapper
+            .signIn-wrapper
+                div.social-icon
+                    i.fab.fa-twitter
+
+                h2 Verify OTP
+                p we have send a OTP to #{otp.email} check inbox and spam box.
+
+                form(action='/otpVerification', method="post")
+                    label(for="username") OTP
+
+                    .user-input 
+                        i.user-icon.fas.fa-user
+                        input#username(type="number" maxlength="4" name="otp"  class="form-control" , value=otp.value)
+
+                        input(type="hidden", name="otpId" value=otp.otpId)
+                    
+                        input(type="hidden", name="username" value=otp.email)
+                    
+                    if error.otp 
+                        p.error.username-error #{error.otp.msg} 
+
+
+
+                    input(type="submit", value="Verify Now" class="form-control signIn-btn")
+
+                p#countDown.text-center.mb-3.mt-3 Expire in 
+                    span.fw-bold.text-warning 1:59 
+                .d-flex.align-item-center.justify-content-center
+                    form(action="/resetPassword", method="post") 
+                        input(type="hidden", name="username" value=otp.email)
+                        input#resendOTP.btn.btn-primary(type='submit' value='Resend OTP')
+
+                div.footer_link
+                    p.disclaim.mt-3 Need to login? 
+                        a(href='/signIn') Login here

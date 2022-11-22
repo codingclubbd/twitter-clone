@@ -26,7 +26,8 @@ const signUpDataValidator = () => {
         }
       })
       .withMessage("username is already in use")
-      .isLength({ min: 3 })
+      .toLowerCase()
+      .isLength({ min: 5 })
       .withMessage("username must be at least 3 characters"),
     //email
     check("email")
@@ -65,10 +66,11 @@ const signUpDataValidator = () => {
       .withMessage("Password should be strong!")
       .custom((val, { req }) => {
         const pass = req.body.password;
+
         if (val === pass) {
-          return false;
-        } else {
           return true;
+        } else {
+          return false;
         }
       })
       .withMessage("Password doesn't match!"),

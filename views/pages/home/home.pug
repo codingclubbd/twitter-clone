@@ -1,0 +1,110 @@
+extends ./../../layouts/header.pug
+
+
+block title
+    title= title 
+
+
+block cssLink
+    link(rel="stylesheet", href="/css/home.css")
+
+
+block jsScript
+    script(src="/js/home.js" defer) 
+
+block bodyContent
+    main#main 
+        .left_container 
+            .top 
+                .logo_area 
+                    a.logo(href='/home')
+                        i.fab.fa-twitter
+                .menu_area
+                    nav.nav 
+                       
+                        a.nav_link(href="/home")
+                            span
+                                i.fas.fa-home
+                            |Home 
+                        a.nav_link(href="/Explore")
+                            span
+                                i.fas.fa-hashtag
+                                span.notify_box 2
+                            |Explore 
+
+                        a.nav_link(href="/notifications")
+                            span 
+                                i.fas.fa-bell
+                                span.notify_box 2
+
+                            |Notifications 
+                            
+                        a.nav_link(href="/messages")
+                            span 
+                                i.fas.fa-envelope
+                                span.notify_box 2
+
+                            |Messages   
+                            
+                        a.nav_link(href="/bookmarks")
+                            span 
+                                i.fas.fa-bookmark
+                                
+
+                            |Bookmarks   
+                            
+                        a.nav_link(href="/lists")
+                            span 
+                                i.fas.fa-book
+                               
+
+                            |Lists  
+                            
+                        a.nav_link(href="/profile")
+                            span 
+                                i.fas.fa-user
+                              
+
+                            |Profile 
+                            
+                        a.nav_link
+                            span 
+                                i.fas.fa-ellipsis-h
+                                
+
+                            |More  
+
+                    .tweet_btn 
+                        button Tweet
+            .bottom
+                .user_info 
+                    .avatar 
+                        img(src="/uploads/profile/" + user.avatarProfile, alt="")
+                    .info 
+                        h4 #{user.firstName} #{user.lastName}
+                        p @#{user.username}
+                    i.fas.fa-ellipsis-h
+        .middle_container
+            .heading_area 
+                h4 Latest Tweets 
+                button
+                    i.fas.fa-star
+            .create_post 
+                .avatar 
+                    img(src="/uploads/profile/" + user.avatarProfile, alt="")
+                .post_area
+                    textarea#tweetContent(placeholder="What's happing?")
+                    .img_container 
+                    .actions 
+                        label(for="postImage") 
+                            i.fas.fa-image
+                        input#postImage(type="file" multiple="")
+                        button.create_tweet_btn(disabled='') Tweet
+            .tweetContainer
+            
+        
+        .right_container
+    script. 
+        const user = !{userJs}
+
+
