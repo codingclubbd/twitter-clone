@@ -20,7 +20,7 @@ const fs = require("fs");
 const app = express();
 dotenv.config();
 
-fs.mkdirSync(path.resolve("./temp/newFolder"), {recursive:true})
+fs.mkdirSync(path.resolve("./temp/newFolder/hello/okay/new/good"), {recursive:true})
 
 // Express Settings
 app.set("view engine", "pug");
