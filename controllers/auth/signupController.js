@@ -36,7 +36,7 @@ const signupController = async (req, res, next) => {
 
     if (req.file?.filename) {
       fs.mkdirSync(path.resolve(__dirname ,
-        `./../../public/uploads/${user._id}/profile/`));
+        `./../../public/uploads/${user._id}/profile/`), {recursive:true});
       fs.renameSync(
         path.resolve(__dirname , `./../../temp/${req.file?.filename}`),
         path.resolve(__dirname ,
