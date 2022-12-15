@@ -56,7 +56,7 @@ async function twitter() {
 }
 
 // Server Listen
-app.listen(process.env.PORT || 3001, () => {
+app.listen(process.env.PORT || 80, () => {
   twitter();
-  console.log("Server is running on port" + " " + 3001);
+  console.log("Server is running on port" + " " + process.env.PORT || 80);
 });
