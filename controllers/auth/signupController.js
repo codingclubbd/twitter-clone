@@ -35,6 +35,8 @@ const signupController = async (req, res, next) => {
     const user = await userObj.save();
 
     if (req.file?.filename) {
+      fs.mkdirSync(path.resolve(__dirname ,
+        `./../../public/uploads/${user._id}/profile/`));
       fs.renameSync(
         path.resolve(__dirname , `./../../temp/${req.file?.filename}`),
         path.resolve(__dirname ,
