@@ -4,7 +4,7 @@ const path = require("path");
 
 function avatarUpload(req, res, next) {
   //directory
-  const uploadDirectory = path.join(__dirname, "/../../public/uploads/profile");
+  const uploadDirectory = path.join(__dirname + "./../../temp/");
   // file size
   const maxFileSize = 10000000;
   // file type
@@ -20,8 +20,6 @@ function avatarUpload(req, res, next) {
     res,
     (err) => {
       if (err) {
-        const user = req.body;
-
         const error = {
           avatarProfile: {
             msg: err?.message,

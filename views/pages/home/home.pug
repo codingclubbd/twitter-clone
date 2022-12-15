@@ -13,16 +13,38 @@ block jsScript
     script(src="/js/home.js" defer) 
 
 block bodyContent
+    #replayModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='replayModalTitle' aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#replayModalTitle.modal-title Replay
+                    button.btn.btn-light.close(type='button' onclick="clearReplayData()" data-dismiss='modal' aria-label='Close')
+                        span(aria-hidden='true') &times;
+                .modal-body
+                .modal-footer(style='display:block')
+                    .create_post 
+                        - avatarSrc = user.avatarProfile ? `/uploads/${user._id}/profile/${user.avatarProfile}` : `/uploads/profile/avatar.png`
+                        .avatar
+                            img(src=avatarSrc, alt="")
+                        .post_area
+                            textarea#replayContent(placeholder="What's happing?")
+                            .replay_image_container 
+                            .actions 
+                                label(for="replayImages") 
+                                    i.fas.fa-image
+                                input#replayImages(type="file" multiple="")
+                                button.replayBtn(disabled='') Tweet
+
     main#main 
         .left_container 
             .top 
                 .logo_area 
-                    a.logo(href='/home')
+                    a.logo(href='/')
                         i.fab.fa-twitter
                 .menu_area
                     nav.nav 
                        
-                        a.nav_link(href="/home")
+                        a.nav_link(href="/")
                             span
                                 i.fas.fa-home
                             |Home 
@@ -60,7 +82,7 @@ block bodyContent
 
                             |Lists  
                             
-                        a.nav_link(href="/profile")
+                        a.nav_link(href="/profile/" +user.username)
                             span 
                                 i.fas.fa-user
                               
@@ -78,12 +100,15 @@ block bodyContent
                         button Tweet
             .bottom
                 .user_info 
+                    .logoutContainer(hidden='')
+                        a.logout(href='/logout') Log out @#{user.username}
                     .avatar 
-                        img(src="/uploads/profile/" + user.avatarProfile, alt="")
+                        img(src=avatarSrc, alt="")
                     .info 
                         h4 #{user.firstName} #{user.lastName}
                         p @#{user.username}
-                    i.fas.fa-ellipsis-h
+                    button(onclick='logoutToggle()' style="border:none")
+                        i.fas.fa-ellipsis-h
         .middle_container
             .heading_area 
                 h4 Latest Tweets 
@@ -91,7 +116,7 @@ block bodyContent
                     i.fas.fa-star
             .create_post 
                 .avatar 
-                    img(src="/uploads/profile/" + user.avatarProfile, alt="")
+                    img(src=avatarSrc, alt="")
                 .post_area
                     textarea#tweetContent(placeholder="What's happing?")
                     .img_container 
@@ -102,6 +127,7 @@ block bodyContent
                         button.create_tweet_btn(disabled='') Tweet
             .tweetContainer
             
+
         
         .right_container
     script. 

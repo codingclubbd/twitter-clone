@@ -1,0 +1,214 @@
+extends ./../../layouts/header.pug
+
+
+block title
+    title= title 
+
+
+block cssLink
+    link(rel="stylesheet", href="/css/home.css")
+    link(rel="stylesheet", href="/css/profile.css")
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css")
+
+
+
+
+
+block jsScript
+    script(src="/js/app.js" defer) 
+    script(src="/js/profile.js" defer) 
+
+
+
+block bodyContent
+    #replayModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='replayModalTitle' aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#replayModalTitle.modal-title Replay
+                    button.btn.btn-light.close(type='button' onclick="clearReplayData()" data-dismiss='modal' aria-label='Close')
+                        span(aria-hidden='true') &times;
+                .modal-body
+                .modal-footer
+                    .create_post 
+                        .avatar 
+                            - avatarSrc = user.avatarProfile ? `/uploads/${user._id}/profile/${user.avatarProfile}` : `/uploads/profile/avatar.png`
+                            img(src=avatarSrc, alt="")
+                            - console.log(avatarSrc)
+                        .post_area
+                            textarea#replayContent(placeholder="What's happing?")
+                            .replay_image_container 
+                            .actions 
+                                label(for="replayImages") 
+                                    i.fas.fa-image
+                                input#replayImages(type="file" multiple="")
+                                button.replayBtn(disabled='') Tweet
+
+
+
+    #avatarUpdateModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='avatarUpdateModalTitle' aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#avatarUpdateModalTitle.modal-title Update Profile Avatar
+                    button.btn.btn-light.close(type='button' data-dismiss='modal' aria-label='Close')
+                        span(aria-hidden='true') &times;
+                .modal-body
+                    input#updateAvatarInput(type="file")
+                    #avatarPreviewContainer 
+                        img#avatarPreview
+                .modal-footer
+                    button.btn.btn-secondary(type='button' data-dismiss='modal') Close
+                    button#uploadAvatarImage.btn.btn-primary(type='button') Save
+
+                                
+    #coverUpdateModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='coverUpdateModalTitle' aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#coverUpdateModalTitle.modal-title Update Cover
+                    button.btn.btn-light.close(type='button' data-dismiss='modal' aria-label='Close')
+                        span(aria-hidden='true') &times;
+                .modal-body
+                    input#updateCoverInput(type="file")
+                    #coverPreviewContainer 
+                        img#coverPreview
+                .modal-footer
+                    button.btn.btn-secondary(type='button' data-dismiss='modal') Close
+                    button#uploadCoverImage.btn.btn-primary(type='button') Save
+
+    
+    main#main 
+        .left_container 
+            .top 
+                .logo_area 
+                    a.logo(href='/')
+                        i.fab.fa-twitter
+                .menu_area
+                    nav.nav 
+                       
+                        a.nav_link(href="/")
+                            span
+                                i.fas.fa-home
+                            |Home 
+                        a.nav_link(href="/Explore")
+                            span
+                                i.fas.fa-hashtag
+                                span.notify_box 2
+                            |Explore 
+
+                        a.nav_link(href="/notifications")
+                            span 
+                                i.fas.fa-bell
+                                span.notify_box 2
+
+                            |Notifications 
+                            
+                        a.nav_link(href="/messages")
+                            span 
+                                i.fas.fa-envelope
+                                span.notify_box 2
+
+                            |Messages   
+                            
+                        a.nav_link(href="/bookmarks")
+                            span 
+                                i.fas.fa-bookmark
+                                
+
+                            |Bookmarks   
+                            
+                        a.nav_link(href="/lists")
+                            span 
+                                i.fas.fa-book
+                               
+
+                            |Lists  
+                            
+                        a.nav_link(href="/profile/" +user.username)
+                            span 
+                                i.fas.fa-user
+                              
+
+                            |Profile 
+                            
+                        a.nav_link
+                            span 
+                                i.fas.fa-ellipsis-h
+                                
+
+                            |More  
+
+                    .tweet_btn 
+                        button Tweet
+            .bottom
+                .user_info 
+                    .logoutContainer(hidden='')
+                        a.logout(href='/logout') Log out @#{user.username}
+                    .avatar 
+                        img(src=avatarSrc, alt="")
+                    .info 
+                        h4 #{user.firstName} #{user.lastName}
+                        p @#{user.username}
+                    button(onclick='logoutToggle()' style="border:none")
+                        i.fas.fa-ellipsis-h
+        .middle_container
+            .heading_area 
+                h4 Profile Page 
+                button
+                    i.fas.fa-star
+
+            .profileContainer 
+                .cover 
+                    - avatarSrc = userProfile.coverPhoto ? `/uploads/${userProfile._id}/cover/${userProfile.coverPhoto}` : `/uploads/profile/avatar.png`
+                    img(src=avatarSrc, alt="")
+                    if userProfile._id == user._id
+                        button.uploadImage(data-toggle="modal" data-target="#coverUpdateModal")
+                            i.fas.fa-camera
+                .avatar 
+                    - avatarSrc = userProfile.avatarProfile ? `/uploads/${userProfile._id}/profile/${userProfile.avatarProfile}` : `/uploads/profile/avatar.png`
+                    img(src=avatarSrc, alt="")
+                    if userProfile._id == user._id
+                        button.uploadImage(data-toggle="modal" data-target="#avatarUpdateModal")
+                            i.fas.fa-camera
+
+
+            
+            .actionBTNs
+                if user.username !== userProfile.username
+                    a.message 
+                        i.fas.fa-envelope
+                    - isFollowing = user.following && user.following.includes(userProfile._id.toString())
+
+
+                    button.follow#followBtn(onclick=`followHandler(event,'${userProfile._id}')` class=isFollowing? "active" : "") #{isFollowing ? "Following" : "Follow"}
+
+            .userDetails 
+                h4.fullName #{userProfile.firstName + " " + userProfile.lastName}
+                p.username @#{userProfile.username}
+                - followers = userProfile.followers && userProfile.followers.length || 0;
+                - following = userProfile.following && userProfile.following.length || 0;
+                .followLinks 
+                    a.following(href="/profile/"+userProfile.username + "/following")
+                        span.value #{following}
+                        |following
+                    a.follower(href="/profile/"+userProfile.username + "/followers")
+                        span.value #{followers}
+                        |followers
+
+
+            .tabs_container
+                a.posts_tab(class=tab === "posts" ? "active" : ""   href=`/profile/` + userProfile.username) Posts 
+                a.replies_tab(class=tab === "replies" ? "active" : "" href="/profile/" + userProfile.username + "/replies") Replies
+            .tweetContainer
+            
+
+        
+        .right_container
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js") 
+    script. 
+        const user = !{userJs}
+        const tab = '!{tab}'
+        const profileUser = !{profileUserJs}
+
+

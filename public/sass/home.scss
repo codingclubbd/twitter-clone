@@ -185,101 +185,103 @@ a {
       outline: none;
     }
   }
+}
 
-  .create_post {
-    display: flex;
-    padding: 15px;
+.create_post {
+  display: flex;
+  padding: 15px;
+  border: 1px solid #eff1f1;
+  justify-content: space-between;
+  .avatar {
+    height: 40px;
+    flex-basis: 40px;
+    border-radius: 50%;
     border: 1px solid #eff1f1;
-    justify-content: space-between;
-    .avatar {
-      height: 40px;
-      flex-basis: 40px;
-      border-radius: 50%;
-      border: 1px solid #eff1f1;
-      overflow: hidden;
-      margin-right: 5px;
+    overflow: hidden;
+    margin-right: 5px;
+
+    img {
+      width: 100% !important;
+    }
+  }
+  .post_area {
+    flex: 1;
+
+    .img_container,
+    .replay_image_container {
+      width: 100%;
+      display: grid;
+      grid-template-columns: auto auto;
+      gap: 10px;
+
+      .img {
+        position: relative;
+
+        span {
+          position: absolute;
+          left: 15px;
+          top: 15px;
+          background-color: #888;
+          border-radius: 50%;
+          height: 25px;
+          width: 25px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+
+          i {
+            color: white;
+            pointer-events: none;
+          }
+        }
+      }
 
       img {
         width: 100%;
+        border-radius: 15px;
+        object-fit: cover;
+        height: 100%;
       }
     }
-    .post_area {
-      flex: 1;
 
-      .img_container {
-        width: 100%;
-        display: grid;
-        grid-template-columns: auto auto;
-        gap: 10px;
+    textarea,
+    #replayContent {
+      width: 100%;
+      border: none;
+      outline: none;
+      resize: none;
+    }
 
-        .img {
-          position: relative;
+    .actions {
+      display: flex;
+      padding: 16px;
+      justify-content: space-between;
+      border-bottom: 1px solid $grayColor;
+      border-top: 1px solid $grayColor;
+      align-items: center;
+      padding-left: 50px;
 
-          span {
-            position: absolute;
-            left: 15px;
-            top: 15px;
-            background-color: #888;
-            border-radius: 50%;
-            height: 25px;
-            width: 25px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-
-            i {
-              color: white;
-              pointer-events: none;
-            }
-          }
-        }
-
-        img {
-          width: 100%;
-          border-radius: 15px;
-          object-fit: cover;
-          height: 100%;
-        }
+      #postImage,
+      #replayImages {
+        display: none;
       }
 
-      textarea {
-        width: 100%;
+      label {
+        cursor: pointer;
+        i {
+          color: #1a8cd8;
+          font-size: 18px;
+        }
+      }
+      button {
+        padding: 6px;
+        color: #fff;
+        background-color: #1d9bf0;
         border: none;
         outline: none;
-        resize: none;
-      }
-
-      .actions {
-        display: flex;
-        padding: 16px;
-        justify-content: space-between;
-        border-bottom: 1px solid $grayColor;
-        border-top: 1px solid $grayColor;
-        align-items: center;
-        padding-left: 50px;
-
-        #postImage,
-        .replyImageInput {
-          display: none;
-        }
-
-        label {
-          cursor: pointer;
-          i {
-            color: #1a8cd8;
-            font-size: 18px;
-          }
-        }
-        button {
-          padding: 6px;
-          color: #fff;
-          background-color: #1d9bf0;
-          border: none;
-          outline: none;
-          width: 90px;
-          border-radius: 25px;
-        }
+        width: 90px;
+        border-radius: 25px;
       }
     }
   }
@@ -301,109 +303,115 @@ a {
   p.retweet_display {
     padding: 10px 0 0 17px;
   }
-  .tweet {
-    display: flex;
-    justify-content: space-between;
-    padding: 16px;
-    border-bottom: 1px solid $grayColor;
+}
+.modal .tweet {
+  padding: 0 !important;
+  border: none;
+  cursor: pointer;
+}
+.tweet {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid $grayColor;
+  cursor: pointer;
 
-    .avatar_area {
-      flex-basis: 50px;
-      margin-right: 16px;
+  .avatar_area {
+    flex-basis: 50px;
+    margin-right: 16px;
 
-      .img {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        overflow: hidden;
-        border: 1px solid $grayColor;
+    .img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 1px solid $grayColor;
 
-        img {
-          width: 100%;
+      img {
+        width: 100%;
+      }
+    }
+  }
+
+  .tweet_body {
+    flex: 1;
+
+    .header {
+      display: flex;
+      gap: 5px;
+      .displayName {
+        color: black;
+        font-weight: bold;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
         }
       }
     }
 
-    .tweet_body {
-      flex: 1;
+    .images {
+      display: grid;
+      grid-template-columns: auto auto;
+      border-radius: 15px;
+      overflow: hidden;
+      margin-top: 10px;
+      border: 1px solid $grayColor;
 
-      .header {
+      .img {
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+    }
+
+    .content {
+      line-height: 10px;
+      margin: 0;
+      line-height: 18px;
+      font-size: 15px;
+      font-family: cursive;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 20px;
+      margin-top: 20px;
+
+      button {
+        background-color: unset;
+        border: none;
+        outline: none;
         display: flex;
-        gap: 5px;
-        .displayName {
-          color: black;
-          font-weight: bold;
-          text-decoration: none;
+        align-items: center;
 
-          &:hover {
-            text-decoration: underline;
-          }
+        i {
+          font-size: 18px;
+          color: rgb(105, 105, 105);
+          margin-right: 5px;
+          pointer-events: none;
+        }
+        span {
+          pointer-events: none;
         }
       }
-
-      .images {
-        display: grid;
-        grid-template-columns: auto auto;
-        border-radius: 15px;
-        overflow: hidden;
-        margin-top: 10px;
-        border: 1px solid $grayColor;
-
-        .img {
-          img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-          }
+      button.like.active {
+        i {
+          color: red;
+        }
+        span {
+          color: red;
         }
       }
-
-      .content {
-        line-height: 10px;
-        margin: 0;
-        line-height: 18px;
-        font-size: 15px;
-        font-family: cursive;
-      }
-
-      .footer {
-        display: flex;
-        justify-content: space-between;
-        padding: 0 20px;
-        margin-top: 20px;
-
-        button {
-          background-color: unset;
-          border: none;
-          outline: none;
-          display: flex;
-          align-items: center;
-
-          i {
-            font-size: 18px;
-            color: rgb(105, 105, 105);
-            margin-right: 5px;
-            pointer-events: none;
-          }
-          span {
-            pointer-events: none;
-          }
+      button.retweet.active {
+        i {
+          color: green;
         }
-        button.like.active {
-          i {
-            color: red;
-          }
-          span {
-            color: red;
-          }
-        }
-        button.retweet.active {
-          i {
-            color: green;
-          }
-          span {
-            color: green;
-          }
+        span {
+          color: green;
         }
       }
     }

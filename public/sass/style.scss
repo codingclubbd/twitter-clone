@@ -1,17 +1,54 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500&display=swap");
 
 *,
 *::after,
 *::before {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 html {
-    scroll-behavior: smooth;
+  scroll-behavior: smooth;
+}
+
+.user_info {
+  position: relative;
+}
+
+.logoutContainer {
+  position: absolute;
+  width: 100%;
+  background: white;
+  padding: 23px 15px;
+  top: -78px;
+  border-radius: 13px;
+  box-shadow: 1px 1px 8px 0px black;
+}
+
+.deleteBtn {
+  background-color: unset;
+  border: none;
+  i {
+    pointer-events: none;
+  }
+}
+
+
+.pinPostFlag {
+  padding: 15px 0 0 15px;
+  font-size: 13px;
+  font-style: italic;
+}
+
+button.deleteBtn.active i {
+  color: blue;
+}
+
+.pinPost {
+  border-bottom: 8px solid #ddd;
 }

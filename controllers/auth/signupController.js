@@ -2,6 +2,7 @@ const createHttpError = require("http-errors");
 const User = require("../../models/User");
 const hashString = require("../../utilities/hashString");
 const sendEmail = require("../../utilities/sendEmail");
+const fs = require("fs");
 
 const signupController = async (req, res, next) => {
   // handle error
@@ -16,7 +17,7 @@ const signupController = async (req, res, next) => {
     const username = req.body.username;
     const email = req.body.email;
     const password = await hashString(req.body.password);
-    const avatarProfile = req.file?.filename || "avatar.png";
+    const avatarProfile = req.file?.filename || "";
 
     const userObj = User({
       firstName,
@@ -31,6 +32,14 @@ const signupController = async (req, res, next) => {
     });
 
     const user = await userObj.save();
+
+    if (req.file?.filename) {
+      fs.renameSync(
+        __dirname + `./../../temp/${req.file?.filename}`,
+        __dirname +
+          `./../../public/uploads/${user._id}/profile/${req.file?.filename}`
+      );
+    }
 
     if (user._id) {
       sendEmail(

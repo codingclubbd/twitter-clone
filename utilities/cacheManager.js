@@ -34,8 +34,17 @@ const updateCache = async (key, value) => {
     console.log(error);
   }
 };
+// updating cache
+const deleteCache = async (key) => {
+  try {
+    await redisClient.del(key);
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 module.exports = {
+  deleteCache,
   redisClient,
   getAndSetCache,
   updateCache,

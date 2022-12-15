@@ -1,6 +1,7 @@
 const Tweet = require("../../models/Tweet");
 const User = require("../../models/User");
 const { getAndSetCache, updateCache } = require("../../utilities/cacheManager");
+const { populatePost } = require("../../utilities/populatePost");
 
 const retweetHandler = async (req, res, next) => {
   try {
@@ -20,7 +21,8 @@ const retweetHandler = async (req, res, next) => {
         postData: postId,
       });
       retweetObj = await tweet.save();
-      updateCache(`posts:${retweetObj._id}`, tweet);
+      await populatePost(tweet);
+      await updateCache(`posts:${retweetObj._id}`, tweet);
     }
 
     const option = deletedPost !== null ? "$pull" : "$addToSet";
@@ -33,6 +35,7 @@ const retweetHandler = async (req, res, next) => {
       },
       { new: true }
     );
+    await populatePost(post);
     updateCache(`posts:${postId}`, post);
 
     // update user likes

@@ -8,7 +8,7 @@ require("dotenv").config();
 // get Home page
 homeRoute.get(
   "/",
-  htmlResponse(`Home page - ${process.env.APP_URL}`),
+  htmlResponse(`Home page - ${process.env.APP_NAME}`),
   loginChecker,
   getHomePage
 );

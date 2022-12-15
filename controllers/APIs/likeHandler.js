@@ -1,6 +1,7 @@
 const Tweet = require("../../models/Tweet");
 const User = require("../../models/User");
 const { getAndSetCache, updateCache } = require("../../utilities/cacheManager");
+const { populatePost } = require("../../utilities/populatePost");
 
 const likeHandler = async (req, res, next) => {
   try {
@@ -24,7 +25,9 @@ const likeHandler = async (req, res, next) => {
       },
       { new: true }
     );
-    updateCache(`posts:${postId}`, post);
+
+    await populatePost(post);
+    await updateCache(`posts:${postId}`, post);
 
     // update user likes
     const modifiedUser = await User.findOneAndUpdate(

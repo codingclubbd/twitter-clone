@@ -12,6 +12,7 @@ const authRouter = require("./routes/auth/authRoute");
 const homeRoute = require("./routes/home/homeRoute");
 const postRoute = require("./routes/APIs/postRoute");
 const { redisClient } = require("./utilities/cacheManager");
+const profileRoute = require("./routes/profile/profileRoute");
 
 // App Initialization and Config
 const app = express();
@@ -30,7 +31,8 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 // Routes
 app.use(authRouter); // authentication route
 
-app.use("/posts", postRoute); // home router
+app.use("/posts", postRoute); // Post router
+app.use("/profile", profileRoute); // Profile router
 app.use("/", homeRoute); // home router
 
 // Not Found Handler
@@ -54,7 +56,7 @@ async function twitter() {
 }
 
 // Server Listen
-app.listen(process.env.PORT || 3000, () => {
+app.listen(process.env.PORT || 3001, () => {
   twitter();
-  console.log("Server is running on port" + " " + 3000);
+  console.log("Server is running on port" + " " + 3001);
 });

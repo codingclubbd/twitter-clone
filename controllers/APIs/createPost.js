@@ -1,6 +1,7 @@
 const Tweet = require("../../models/Tweet");
 const User = require("../../models/User");
 const { updateCache } = require("../../utilities/cacheManager");
+const { populatePost } = require("../../utilities/populatePost");
 
 const createPost = async (req, res, next) => {
   try {
@@ -22,6 +23,7 @@ const createPost = async (req, res, next) => {
 
     await User.populate(result, { path: "tweetedBy", select: "-password" });
 
+    await populatePost(result);
     updateCache(`posts:${result._id}`, result);
 
     return res.json(result);

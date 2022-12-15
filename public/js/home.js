@@ -1,129 +1,22 @@
 // selection
 const tweetContentTextArea = document.querySelector("textarea#tweetContent");
+const replayContentTextArea = document.querySelector("textarea#replayContent");
 const tweetBtn = document.querySelector("button.create_tweet_btn");
+const replayBtn = document.querySelector("button.replayBtn");
 const postImageInput = document.querySelector("input#postImage");
+const replayImageInput = document.querySelector("input#replayImages");
 const imgContainer = document.querySelector(".img_container");
+const replayImgContainer = document.querySelector(".replay_image_container ");
 const tweetContainer = document.querySelector(".tweetContainer");
 
 let postImages = [];
 
-// creating new tweetHtml
-function createTweet(data) {
-  let newData = data;
-
-  let reTweetedHTML = "";
-
-  if (data.postData) {
-    newData = data.postData;
-    reTweetedHTML =
-      data.tweetedBy.username === user.username
-        ? `<p class='retweet_display'>
-      <i class="fas fa-retweet"></i> You Retweeted
-      </p>`
-        : `<p class='retweet_display'>
-      <i class="fas fa-retweet"></i> Retweeted by @<a href='/profile/${data.tweetedBy.username}'>${data.tweetedBy.username}</a>
-      </p>`;
-  }
-
-  const {
-    likes,
-    _id: postId,
-    content,
-    images: tweetImages,
-    retweetUsers,
-    tweetedBy: { _id, username, firstName, lastName, avatarProfile },
-    createdAt,
-  } = newData;
-
-  function timeSince(date) {
-    var seconds = Math.floor((new Date() - date) / 1000);
-
-    var interval = seconds / 31536000;
-
-    if (interval > 1) {
-      return Math.floor(interval) + " years ago";
-    }
-    interval = seconds / 2592000;
-    if (interval > 1) {
-      return Math.floor(interval) + " months ago";
-    }
-    interval = seconds / 86400;
-    if (interval > 1) {
-      return Math.floor(interval) + " days ago";
-    }
-    interval = seconds / 3600;
-    if (interval > 1) {
-      return Math.floor(interval) + " hours ago";
-    }
-    interval = seconds / 60;
-    if (interval > 1) {
-      return Math.floor(interval) + " minutes ago";
-    }
-    return "Just now";
-  }
-
-  const time = timeSince(new Date(createdAt).getTime());
-
-  const div = document.createElement("div");
-
-  div.innerHTML = `
-  ${reTweetedHTML}
-  <div class='tweet'>
-  <div class="avatar_area">
-    <div class="img">
-      <img src="${
-        window.location.origin
-      }/uploads/profile/${avatarProfile}" alt="avatar" class="avatar" />
-    </div>
-  </div>
-  <div class="tweet_body">
-    <div class="header">
-      <a href="/profile/${username}" class="displayName">${
-    firstName + " " + lastName
-  }</a>
-      <span class="username">@${username}</span> . 
-      <div class="date">${time}</div>
-    </div>
-    <div class="content">${content}</div>
-    <div class="images"></div>
-    <div class="footer">
-      <button class="replay">
-        <i class="fas fa-comment"></i>
-        <span>50</span>
-      </button>
-      <button onclick="retweetHandler(event, '${postId}')" class="retweet ${
-    retweetUsers.includes(user._id) ? "active" : ""
-  }">
-        <i class="fas fa-retweet"></i>
-        <span>${retweetUsers.length || ""}</span>
-      </button>
-      <button  onclick="likeHandler(event, '${postId}')" class="like ${
-    user.likes.includes(postId) ? "active" : ""
-  }">
-        <i class="fas fa-heart"></i>
-        <span>${likes.length ? likes.length : ""}</span>
-      </button>
-    </div>
-  </div>
-  </div>
-  `;
-
-  const imageContainer = div.querySelector("div.images");
-
-  tweetImages?.forEach((img) => {
-    const imgDiv = document.createElement("div");
-    imgDiv.classList.add("img");
-    imgDiv.innerHTML = `<img src="${window.location.origin}/uploads/${_id}/tweets/${img}" alt="" />`;
-    imageContainer.appendChild(imgDiv);
-  });
-
-  return div;
-}
-
 const loadPosts = async () => {
   // http://localhost:3001/posts
   try {
-    const result = await fetch(`${window.location.origin}/posts`);
+    const result = await fetch(
+      `${window.location.origin}/posts?followingOnly=true`
+    );
     const posts = await result.json();
 
     if (!posts.length) {
@@ -174,6 +67,8 @@ tweetBtn.addEventListener("click", function () {
 });
 
 tweetBtn.style.background = "#8ecaf3";
+replayBtn.style.background = "#8ecaf3";
+
 tweetContentTextArea.addEventListener("input", function (e) {
   const val = this.value.trim();
 
@@ -183,6 +78,18 @@ tweetContentTextArea.addEventListener("input", function (e) {
   } else {
     tweetBtn.setAttribute("disabled", "");
     tweetBtn.style.background = "#8ecaf3";
+  }
+});
+
+replayContentTextArea.addEventListener("input", function (e) {
+  const val = this.value.trim();
+
+  if (val) {
+    replayBtn.removeAttribute("disabled");
+    replayBtn.style.background = "#1d9bf0";
+  } else {
+    replayBtn.setAttribute("disabled", "");
+    replayBtn.style.background = "#8ecaf3";
   }
 });
 
@@ -214,6 +121,33 @@ postImageInput.addEventListener("change", function (e) {
   });
 });
 
+replayImageInput.addEventListener("change", function (e) {
+  const files = this.files;
+
+  postImages = [];
+  [...files].forEach((file) => {
+    if (!["image/jpg", "image/png", "image/jpeg"].includes(file.type)) return;
+
+    replayBtn.removeAttribute("disabled");
+    replayBtn.style.background = "#1d9bf0";
+    postImages.push(file);
+
+    const fr = new FileReader();
+    fr.onload = function () {
+      const htmlElement = document.createElement("div");
+      htmlElement.classList.add("img");
+      htmlElement.dataset.name = file.name;
+      htmlElement.innerHTML = `<span id="cross_btn">
+                                    <i class="fas fa-times"></i>
+                                  </span><img>`;
+      const img = htmlElement.querySelector("img");
+      img.src = fr.result;
+      replayImgContainer.appendChild(htmlElement);
+    };
+    fr.readAsDataURL(file);
+  });
+});
+
 imgContainer.addEventListener("click", function (e) {
   const crossBtn = e.target.id === "cross_btn" ? e.target : null;
   if (!crossBtn) return;
@@ -229,6 +163,25 @@ imgContainer.addEventListener("click", function (e) {
       if (!postImages.length && !tweetContentTextArea?.value?.trim()) {
         tweetBtn.setAttribute("disabled", "");
         tweetBtn.style.background = "#8ecaf3";
+      }
+    }
+  });
+});
+
+replayImgContainer.addEventListener("click", function (e) {
+  const crossBtn = e.target.id === "cross_btn" ? e.target : null;
+  if (!crossBtn) return;
+  const imgEl = crossBtn.parentElement;
+  const fileName = imgEl.dataset.name;
+
+  postImages.forEach((file, i) => {
+    if (fileName === file.name) {
+      postImages.splice(i, 1);
+      imgEl.remove();
+
+      if (!postImages.length && !tweetContentTextArea?.value?.trim()) {
+        replayBtn.setAttribute("disabled", "");
+        replayBtn.style.background = "#8ecaf3";
       }
     }
   });
@@ -267,12 +220,76 @@ function retweetHandler(event, postId) {
   })
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
-      if (data.retweetUsers.includes(user._id)) {
-        retweetBtn.classList.add("active");
-      } else {
-        retweetBtn.classList.remove("active");
+      if (data._id) {
+        location.reload();
       }
-      span.innerText = data.retweetUsers.length || "";
+      // if (data.retweetUsers.includes(user._id)) {
+      //   retweetBtn.classList.add("active");
+      // } else {
+      //   retweetBtn.classList.remove("active");
+      // }
+      // span.innerText = data.retweetUsers.length || "";
     });
+}
+
+// replay
+function replyBtn(event, postId) {
+  const replyBtnEl = event.target;
+  const postData = JSON.parse(replyBtnEl.dataset.post);
+  const modal = document.querySelector("#replayModal");
+  const modalBody = modal.querySelector(".modal-body");
+  modalBody.innerHTML = "";
+
+  const tweetEl = createTweet(postData);
+  modalBody.appendChild(tweetEl);
+
+  replayBtn.addEventListener("click", function (e) {
+    const content = replayContentTextArea.value;
+
+    if (!(postImages.length || content)) return;
+
+    const formData = new FormData();
+    formData.append("content", content);
+    formData.append("postId", postId);
+
+    postImages.forEach((file) => {
+      formData.append(file.name, file);
+    });
+
+    const url = `${window.location.origin}/posts/replay/${postId}`;
+    fetch(url, {
+      method: "POST",
+      body: formData,
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        window.location.reload();
+        return console.log(data);
+        const postEl = createTweet(data);
+        tweetContainer.insertAdjacentElement("afterbegin", postEl);
+        imgContainer.innerHTML = "";
+        tweetContentTextArea.value = "";
+        tweetBtn.setAttribute("disabled", "");
+        tweetBtn.style.background = "#8ecaf3";
+        postImages = [];
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  });
+
+  $("#replayModal").modal("toggle");
+}
+
+function clearReplayData() {
+  replayImgContainer.innerHTML = "";
+  replayContentTextArea.value = "";
+  replayBtn.setAttribute("disabled", "");
+  replayBtn.style.background = "#8ecaf3";
+}
+
+function openTweet(event, postId) {
+  const targetEl = event.target;
+  if (targetEl.localName === "button") return;
+  window.location.href = `${window.location.origin}/posts/${postId}`;
 }

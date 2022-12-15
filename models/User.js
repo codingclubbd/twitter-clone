@@ -48,6 +48,9 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    coverPhoto: {
+      type: String,
+    },
     status: {
       type: String,
       enum: ["unverified", "verified", "suspended"],
@@ -63,6 +66,18 @@ const userSchema = new Schema(
       {
         type: Schema.Types.ObjectId,
         ref: "Tweet",
+      },
+    ],
+    following: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    followers: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
       },
     ],
   },

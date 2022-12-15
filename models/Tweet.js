@@ -35,6 +35,17 @@ const tweetSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Tweet",
     },
+    replayTo: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Tweet",
+    },
+    replayedPosts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Tweet",
+      },
+    ],
+    pinned:Boolean
   },
   {
     timestamps: true,
