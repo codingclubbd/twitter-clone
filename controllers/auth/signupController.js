@@ -3,6 +3,7 @@ const User = require("../../models/User");
 const hashString = require("../../utilities/hashString");
 const sendEmail = require("../../utilities/sendEmail");
 const fs = require("fs");
+const path = require("path");
 
 const signupController = async (req, res, next) => {
   // handle error
@@ -35,9 +36,9 @@ const signupController = async (req, res, next) => {
 
     if (req.file?.filename) {
       fs.renameSync(
-        __dirname + `./../../temp/${req.file?.filename}`,
-        __dirname +
-          `./../../public/uploads/${user._id}/profile/${req.file?.filename}`
+        path.resolve(__dirname , `./../../temp/${req.file?.filename}`),
+        path.resolve(__dirname ,
+          `./../../public/uploads/${user._id}/profile/${req.file?.filename}`)
       );
     }
 
