@@ -13,10 +13,14 @@ const homeRoute = require("./routes/home/homeRoute");
 const postRoute = require("./routes/APIs/postRoute");
 const { redisClient } = require("./utilities/cacheManager");
 const profileRoute = require("./routes/profile/profileRoute");
+const fs = require("fs");
+
 
 // App Initialization and Config
 const app = express();
 dotenv.config();
+
+fs.mkdirSync(path.resolve("./temp/newFolder"), {recursive:true})
 
 // Express Settings
 app.set("view engine", "pug");
