@@ -179,7 +179,9 @@ const loadPosts = async () => {
   // http://localhost:3001/posts
   try {
     const result = await fetch(
-      `${window.location.origin}/posts?tweetedBy=${profileUser._id}&replyTo=${tab == "replies"}`
+      `${window.location.origin}/posts?tweetedBy=${profileUser._id}&replyTo=${
+        tab == "replies"
+      }`
     );
     const posts = await result.json();
 
@@ -192,23 +194,17 @@ const loadPosts = async () => {
       tweetContainer.insertAdjacentElement("afterBegin", tweetEl);
     });
 
-    if(tab=="posts"){
-
+    if (tab == "posts") {
       const pinPostsResult = await fetch(
         `${window.location.origin}/posts?tweetedBy=${profileUser._id}&pinned=true`
       );
       const pinPosts = await pinPostsResult.json();
-  
-     pinPosts?.forEach((post) => {
-      const tweetEl = createTweet(post, true);
-      tweetContainer.insertAdjacentElement("afterBegin", tweetEl);
-    });
 
+      pinPosts?.forEach((post) => {
+        const tweetEl = createTweet(post, true);
+        tweetContainer.insertAdjacentElement("afterBegin", tweetEl);
+      });
     }
-
-
-
-
   } catch (error) {}
 };
 
@@ -240,11 +236,6 @@ function followHandler(e, userId) {
       }
     });
 }
-
-
-
-
-
 
 updateAvatarInput.addEventListener("change", function (e) {
   const files = this.files;

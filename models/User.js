@@ -80,6 +80,9 @@ const userSchema = new Schema(
         ref: "User",
       },
     ],
+
+    activeStatus: Boolean,
+    lastSeen: Date,
   },
   {
     timestamps: true,

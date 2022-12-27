@@ -25,6 +25,7 @@ block bodyContent
                     .create_post 
                         .avatar 
                             - avatarSrc = user.avatarProfile ? `/uploads/${user._id}/profile/${user.avatarProfile}` : `/uploads/profile/avatar.png`
+                            .activeStatus.tweetActiveStatus.active(data-activeStatus="Active Now",)
                             img(src=avatarSrc, alt="")
                         .post_area
                             textarea#replayContent(placeholder="What's happing?")
@@ -48,11 +49,11 @@ block bodyContent
                             span
                                 i.fas.fa-home
                             |Home 
-                        a.nav_link(href="/Explore")
+                        a.nav_link(href="/search")
                             span
-                                i.fas.fa-hashtag
+                                i.fas.fa-search
                                 span.notify_box 2
-                            |Explore 
+                            |Search 
 
                         a.nav_link(href="/notifications")
                             span 
@@ -103,6 +104,7 @@ block bodyContent
                     .logoutContainer(hidden='')
                         a.logout(href='/logout') Log out @#{user.username}
                     .avatar 
+                        .activeStatus.tweetActiveStatus.active(data-activeStatus="Active Now",)
                         img(src=avatarSrc, alt="")
                     .info 
                         h4 #{user.firstName} #{user.lastName}

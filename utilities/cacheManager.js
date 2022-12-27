@@ -1,6 +1,6 @@
 const redis = require("redis");
 const redisClient = redis.createClient();
-const defaultCacheExpirationTime = 604800; // 7 days
+const defaultCacheExpirationTime = 1000 * 60; // 7 days
 
 // getting and setting cache
 const getAndSetCache = async (key, cb) => {

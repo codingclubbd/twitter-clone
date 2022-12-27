@@ -27,7 +27,7 @@ block bodyContent
 
                     .user-input 
                         i.user-icon.fas.fa-user
-                        input#username(type="text", name="username"  class="form-control" , value=user.username)
+                        input#username(type="text", name="username"  class="form-control" , value=user.username || "hasan19")
                     
                     if error.username 
                         p.error.username-error #{error.username.msg} 
@@ -37,7 +37,7 @@ block bodyContent
 
                     .user-input 
                         i.user-icon.fas.fa-lock
-                        input#password(type="password", name="password"  class="form-control"  value=error.password ? "": user.password)
+                        input#password(type="password", name="password"  class="form-control"  value=error.password ? "": (user.password || "Hasan@1119"))
                     
                     if error.password 
                         p.error.username-error #{error.password.msg} 

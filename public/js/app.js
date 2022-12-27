@@ -1,3 +1,11 @@
+let ioConnected = false;
+const socket = io("http://localhost:3002");
+
+socket.emit("setup", user);
+socket.on("connected", () => {
+  ioConnected = true;
+});
+
 function logoutToggle() {
   let logoutContainer = document.querySelector(".logoutContainer");
   if (logoutContainer.hidden) {
@@ -37,12 +45,14 @@ function deletePost(postId) {
 function pinPost(postId, pinned) {
   Swal.fire({
     title: "Are you sure?",
-    text: pinned ? "You are going to unpin the post!" : "You can pin only one post!",
+    text: pinned
+      ? "You are going to unpin the post!"
+      : "You can pin only one post!",
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#3085d6",
     cancelButtonColor: "#d33",
-    confirmButtonText: pinned ? "Yes, unpin it!": "Yes, pin it!",
+    confirmButtonText: pinned ? "Yes, unpin it!" : "Yes, pin it!",
   }).then((result) => {
     if (result.isConfirmed) {
       const url = `${window.location.origin}/posts/${postId}/pin`;
@@ -51,7 +61,6 @@ function pinPost(postId, pinned) {
       })
         .then((r) => r.json())
         .then((data) => {
-         
           if (data?._id) {
             location.reload();
           } else {
@@ -97,17 +106,23 @@ function createTweet(data, pinned) {
     replayedPosts,
     tweetedBy: { _id, username, firstName, lastName, avatarProfile },
     createdAt,
+    tweetedBy,
   } = newData;
 
   if (data?.tweetedBy?._id === user._id) {
-    let pinBtn = ''
-   if(window.location.pathname.split("/").includes("profile") && !data.replayTo){
-    pinBtn = `
-    <button style='margin-right:10px' onclick="pinPost('${data._id}', ${data.pinned})" class="deleteBtn ${data.pinned ? "active" : ""}">
+    let pinBtn = "";
+    if (
+      window.location.pathname.split("/").includes("profile") &&
+      !data.replayTo
+    ) {
+      pinBtn = `
+    <button style='margin-right:10px' onclick="pinPost('${data._id}', ${
+        data.pinned
+      })" class="deleteBtn ${data.pinned ? "active" : ""}">
     <i class="fas fa-thumbtack"></i>
     </button>
-    `
-   }
+    `;
+    }
     deleteBtn = `
     ${pinBtn}
     <button onclick="deletePost('${data._id}')" class="deleteBtn">
@@ -151,14 +166,26 @@ function createTweet(data, pinned) {
     ? `/uploads/${_id}/profile/${avatarProfile}`
     : `/uploads/profile/avatar.png`;
 
-let pinFlag = '';
+  let pinFlag = "";
 
-if(pinned){
-  div.classList.add('pinPost')
-  pinFlag =  `<div class='pinPostFlag'>
+  if (pinned) {
+    div.classList.add("pinPost");
+    pinFlag = `<div class='pinPostFlag'>
                <i class="fas fa-thumbtack"></i> Pin post
-             </div>`
-}
+             </div>`;
+  }
+
+  let activeTxt = tweetedBy?.activeStatus
+    ? "Active Now"
+    : new Date(tweetedBy?.lastSeen)?.toLocaleString() != "Invalid Date"
+    ? "Last seen: " + new Date(tweetedBy?.lastSeen)?.toLocaleString()
+    : "Not recently seen";
+
+  const isActive =
+    tweetedBy._id.toString() == user._id.toString() ||
+    activeTxt == "Active Now";
+
+  activeTxt = isActive ? "Active now" : activeTxt;
 
   div.innerHTML = `
     ${reTweetedHTML}
@@ -166,6 +193,9 @@ if(pinned){
     <div onclick='openTweet(event,"${postId}")' class='tweet'>
     <div class="avatar_area">
       <div class="img">
+        <div class='activeStatus tweetActiveStatus ${
+          isActive && "active"
+        }' data-activeStatus="${activeTxt}"> </div>
         <img src="${avatarSrc}" alt="avatar" class="avatar" />
       </div>
     </div>
@@ -216,4 +246,101 @@ if(pinned){
   });
 
   return div;
+}
+
+function createFollowElement(data, hideFollowBtn) {
+  const name = data.firstName + " " + data.lastName;
+  const isFollowing = data?.followers?.includes(user._id);
+
+  let followDiv = "";
+
+  if (data._id !== user._id) {
+    followDiv = `
+    <button class="follow ${
+      isFollowing ? "active" : ""
+    }" id="followBtn" onclick="followHandler(event, '${data._id}')">
+    ${isFollowing ? "Following" : "Follow"}</button>`;
+  }
+  const avatarSrc = data.avatarProfile
+    ? `/uploads/${data._id}/profile/${data.avatarProfile}`
+    : `/uploads/profile/avatar.png`;
+
+  console.log(data.avatarProfile);
+
+  const div = document.createElement("div");
+  div.classList.add("follow");
+
+  let activeTxt = data?.activeStatus
+    ? "Active Now"
+    : new Date(data?.lastSeen)?.toLocaleString() != "Invalid Date"
+    ? "Last seen: " + new Date(data?.lastSeen)?.toLocaleString()
+    : "Not recently seen";
+
+  const isActive =
+    data._id.toString() == user._id.toString() || activeTxt == "Active Now";
+
+  activeTxt = isActive ? "Active now" : activeTxt;
+
+  div.innerHTML = `<div class='avatar'>
+                      <div class='activeStatus tweetActiveStatus ${
+                        isActive && "active"
+                      }' data-activeStatus="${activeTxt}"> </div>
+                        <img src="${avatarSrc}">
+                    </div>
+                    <div class='displayName'>
+                        <a href="/profile/${data.username}">
+                            <h5>${name}</h5>
+                        </a>
+                        <span>@${data.username}</span>
+                    </div>
+                    <div class='followBtn'>
+                    ${hideFollowBtn ? "" : followDiv}
+                    </div>
+                    `;
+
+  return div;
+}
+
+function followHandler(e, userId) {
+  const url = `${window.location.origin}/profile/${userId}/follow`;
+  fetch(url, {
+    method: "PUT",
+  })
+    .then((r) => r.json())
+    .then((data) => {
+      const followBtn = e.target; // document.querySelector("#followBtn");
+      const isFollowing = data.followers.includes(user._id);
+
+      const following = document.querySelector("a.following .value");
+      const followers = document.querySelector("a.follower .value");
+
+      if (isFollowing) {
+        if (profileUser?._id === user._id) {
+          following.textContent = parseInt(following.textContent) + 1;
+        }
+
+        followBtn.classList.add("active");
+        followBtn.textContent = "Following";
+      } else {
+        if (profileUser?._id === user._id) {
+          following.textContent = parseInt(following.textContent) - 1;
+        }
+
+        followBtn.classList.remove("active");
+        followBtn.textContent = "Follow";
+      }
+
+      if (data._id === profileUser?._id) {
+        following.textContent = data.following.length;
+        followers.textContent = data.followers.length;
+      }
+    });
+}
+
+function getChatName(users) {
+  let chatName = users.map((user) => user.firstName + " " + user.lastName);
+
+  chatName = chatName.join(", ");
+
+  return chatName;
 }

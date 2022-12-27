@@ -1,0 +1,149 @@
+extends ./../../layouts/header.pug
+
+
+block title
+    title= title 
+
+
+block cssLink
+    link(rel="stylesheet", href="/css/home.css")
+    link(rel="stylesheet", href="/css/profile.css")
+ 
+
+
+
+
+
+block jsScript
+    script(src="/js/search.js" defer) 
+
+
+
+block bodyContent
+    #replayModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='replayModalTitle' aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#replayModalTitle.modal-title Replay
+                    button.btn.btn-light.close(type='button' onclick="clearReplayData()" data-dismiss='modal' aria-label='Close')
+                        span(aria-hidden='true') &times;
+                .modal-body
+                .modal-footer
+                    .create_post 
+                        .avatar 
+                            - avatarSrc = user.avatarProfile ? `/uploads/${user._id}/profile/${user.avatarProfile}` : `/uploads/profile/avatar.png`
+                            .activeStatus.tweetActiveStatus.active(data-activeStatus="Active Now",)
+                            img(src=avatarSrc, alt="")
+                        .post_area
+                            textarea#replayContent(placeholder="What's happing?")
+                            .replay_image_container 
+                            .actions 
+                                label(for="replayImages") 
+                                    i.fas.fa-image
+                                input#replayImages(type="file" multiple="")
+                                button.replayBtn(disabled='') Tweet
+
+
+
+
+    main#main 
+        .left_container 
+            .top 
+                .logo_area 
+                    a.logo(href='/')
+                        i.fab.fa-twitter
+                .menu_area
+                    nav.nav 
+                       
+                        a.nav_link(href="/")
+                            span
+                                i.fas.fa-home
+                            |Home 
+                        a.nav_link(href="/search")
+                            span
+                                i.fas.fa-search
+                            |Search 
+
+                        a.nav_link(href="/notifications")
+                            span 
+                                i.fas.fa-bell
+                                span.notify_box 2
+
+                            |Notifications 
+                            
+                        a.nav_link(href="/messages")
+                            span 
+                                i.fas.fa-envelope
+                                span.notify_box 2
+
+                            |Messages   
+                            
+                        a.nav_link(href="/bookmarks")
+                            span 
+                                i.fas.fa-bookmark
+                                
+
+                            |Bookmarks   
+                            
+                        a.nav_link(href="/lists")
+                            span 
+                                i.fas.fa-book
+                               
+
+                            |Lists  
+                            
+                        a.nav_link(href="/profile/" +user.username)
+                            span 
+                                i.fas.fa-user
+                              
+
+                            |Profile 
+                            
+                        a.nav_link
+                            span 
+                                i.fas.fa-ellipsis-h
+                                
+
+                            |More  
+
+                    .tweet_btn 
+                        button Tweet
+            .bottom
+                .user_info 
+                    .logoutContainer(hidden='')
+                        a.logout(href='/logout') Log out @#{user.username}
+                    .avatar 
+                        .activeStatus.tweetActiveStatus.active(data-activeStatus="Active Now",)
+                        img(src=avatarSrc, alt="")
+                    .info 
+                        h4 #{user.firstName} #{user.lastName}
+                        p @#{user.username}
+                    button(onclick='logoutToggle()' style="border:none")
+                        i.fas.fa-ellipsis-h
+        .middle_container
+            .heading_area 
+                h4 Search Page
+                button
+                    i.fas.fa-star
+
+            .searchContainer 
+                i.fas.fa-search
+                input#searchInput(type="search", placeholder="Search " + tab, name="")
+
+
+            .tabs_container
+                a.posts_tab(class=tab === "posts" ? "active" : ""   href=`/search`) Posts 
+                a.replies_tab(class=tab === "users" ? "active" : "" href="/search/users") Users
+            .tweetContainer
+            .followContainer
+            
+
+        
+        .right_container
+
+    script. 
+        const user = !{userJs}
+        const tab = '!{tab}'
+        const profileUser = {}
+
+

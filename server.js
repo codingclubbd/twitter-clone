@@ -1,5 +1,6 @@
 // Dependencies
 const express = require("express");
+const { createServer } = require("http");
 const path = require("path");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
@@ -14,13 +15,16 @@ const postRoute = require("./routes/APIs/postRoute");
 const { redisClient } = require("./utilities/cacheManager");
 const profileRoute = require("./routes/profile/profileRoute");
 const fs = require("fs");
-
+const usersRoute = require("./routes/users/usersRoute");
+const searchRoute = require("./routes/search/searchRoute");
+const messagesRoute = require("./routes/messages/messagesRoute");
+const chatRoute = require("./routes/chat/chatRoute");
+const { httpSocketServer } = require("./utilities/socket");
 
 // App Initialization and Config
 const app = express();
+const httpServer = createServer(app);
 dotenv.config();
-
-fs.mkdirSync(path.resolve("./temp/newFolder/hello/okay/new/good"), {recursive:true})
 
 // Express Settings
 app.set("view engine", "pug");
@@ -28,7 +32,11 @@ app.set("views", "views");
 
 // Middleware
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
@@ -37,6 +45,10 @@ app.use(authRouter); // authentication route
 
 app.use("/posts", postRoute); // Post router
 app.use("/profile", profileRoute); // Profile router
+app.use("/search", searchRoute); // search router
+app.use("/users", usersRoute); // users router
+app.use("/messages", messagesRoute); // messages router
+app.use("/chat", chatRoute); // messages router
 app.use("/", homeRoute); // home router
 
 // Not Found Handler
@@ -60,7 +72,12 @@ async function twitter() {
 }
 
 // Server Listen
-app.listen(process.env.PORT || 80, () => {
+httpServer.listen(process.env.PORT || 3001, () => {
   twitter();
-  console.log("Server is running on port" + " " + process.env.PORT || 80);
+  console.log("Server is running on port" + " " + process.env.PORT || 3001);
 });
+
+httpSocketServer.listen(
+  3002,
+  console.log("Socket server is running on port 3002")
+);

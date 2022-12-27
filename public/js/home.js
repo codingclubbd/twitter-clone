@@ -27,7 +27,9 @@ const loadPosts = async () => {
       const tweetEl = createTweet(post);
       tweetContainer.insertAdjacentElement("afterBegin", tweetEl);
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 loadPosts();
@@ -52,7 +54,6 @@ tweetBtn.addEventListener("click", function () {
   })
     .then((r) => r.json())
     .then((data) => {
-      console.log(data);
       const postEl = createTweet(data);
       tweetContainer.insertAdjacentElement("afterbegin", postEl);
       imgContainer.innerHTML = "";

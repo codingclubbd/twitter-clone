@@ -12,21 +12,32 @@ const getAllPosts = async (req, res, next) => {
 
     const filterObj = {};
 
+    // tweetedBy
     req.query.tweetedBy && (filterObj.tweetedBy = req.query?.tweetedBy);
+
+    // replayTo
     req.query.replyTo &&
       (filterObj.replayTo =
         req.query?.replyTo == "false" ? { $exists: false } : { $exists: true });
 
-    user.following = user.following || [];
+    //following only
+    if (req.query.followingOnly && req.query.followingOnly == "true") {
+      user.following = user.following || [];
 
-    const followingUsers = [...user.following];
-    followingUsers.push(user._id);
+      const followingUsers = [...user.following];
+      followingUsers.push(user._id);
 
-    req.query.followingOnly &&
-      req.query.followingOnly == "true" &&
-      (filterObj.tweetedBy = { $in: followingUsers });
+      req.query.followingOnly &&
+        req.query.followingOnly == "true" &&
+        (filterObj.tweetedBy = { $in: followingUsers });
+    }
 
-      req.query.pinned &&  req.query.pinned == "true" && (filterObj.pinned = true)
+    //pin post only
+    req.query.pinned && req.query.pinned == "true" && (filterObj.pinned = true);
+
+    // search post
+    req.query.searchText &&
+      (filterObj.content = { $regex: new RegExp(req.query.searchText, "ig") });
 
     const result = await Tweet.find(filterObj);
     await User.populate(result, { path: "tweetedBy", select: "-password" });

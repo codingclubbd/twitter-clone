@@ -8,20 +8,71 @@
   }
 
   .avatar {
-    border: 2px solid #1d9bf0;
-
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    overflow: hidden;
-    outline: 1px solid #fff;
+
     position: absolute;
     bottom: -50px;
     left: 15px;
 
+    .activeStatus.active {
+      background-color: #00c208;
+    }
+
+    .activeStatus {
+      width: 20px;
+      height: 20px;
+      background-color: #bcbcbc;
+      border-radius: 50%;
+      position: absolute;
+      z-index: 100;
+      bottom: 3px;
+      right: 5px;
+      border: 2px solid white;
+      &::after {
+        content: attr(data-activeStatus);
+        font-size: 12px;
+        white-space: nowrap;
+        background: #fff;
+        position: absolute;
+        box-shadow: 0px 0px 2px 0px #000;
+        top: -5px;
+        border-radius: 2px;
+        left: 25px;
+        padding: 2px 5px;
+        visibility: hidden;
+      }
+      &::before {
+        content: "";
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        background-color: white;
+        left: 20px;
+        top: 1px;
+        transform: rotate(30deg) skew(342deg, 13deg);
+        box-shadow: 0px 0px 2px 0px #000;
+        visibility: hidden;
+      }
+    }
+
+    .activeStatus:hover::after {
+      visibility: visible;
+    }
+    .activeStatus:hover::before {
+      visibility: visible;
+    }
+
     img {
-      width: 100%;
+      border: 2px solid #1d9bf0;
+      background-color: white;
+      outline: 1px solid #fff;
+      width: 100px;
+      height: 100px;
       object-fit: cover;
+      overflow: hidden;
+      border-radius: 50%;
     }
   }
 }
@@ -65,6 +116,7 @@ button.follow {
 
 .userDetails {
   margin-top: 12px;
+  padding-left: 12px;
 
   h4.fullName {
     font-size: 20px;

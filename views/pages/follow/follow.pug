@@ -14,7 +14,6 @@ block cssLink
 
 
 block jsScript
-    script(src="/js/app.js" defer) 
     script(src="/js/follow.js" defer) 
 
 
@@ -32,6 +31,7 @@ block bodyContent
                     .create_post 
                         .avatar 
                             - avatarSrc = user.avatarProfile ? `/uploads/${user._id}/profile/${user.avatarProfile}` : `/uploads/profile/avatar.png`
+                            .activeStatus.tweetActiveStatus.active(data-activeStatus="Active Now",)
                             img(src=avatarSrc, alt="")
                         .post_area
                             textarea#replayContent(placeholder="What's happing?")
@@ -55,11 +55,10 @@ block bodyContent
                             span
                                 i.fas.fa-home
                             |Home 
-                        a.nav_link(href="/Explore")
+                        a.nav_link(href="/search")
                             span
-                                i.fas.fa-hashtag
-                                span.notify_box 2
-                            |Explore 
+                                i.fas.fa-search
+                            |Search 
 
                         a.nav_link(href="/notifications")
                             span 
@@ -110,6 +109,7 @@ block bodyContent
                     .logoutContainer(hidden='')
                         a.logout(href='/logout') Log out @#{user.username}
                     .avatar 
+                        .activeStatus.tweetActiveStatus.active(data-activeStatus="Active Now",)
                         img(src=avatarSrc, alt="")
                     .info 
                         h4 #{user.firstName} #{user.lastName}
@@ -124,12 +124,30 @@ block bodyContent
 
             .profileContainer 
                 .cover 
-                    img(src=`/uploads/${userProfile._id}/cover/${userProfile.coverPhoto}` , alt="")
-                .avatar
+                    - avatarSrc = userProfile.coverPhoto ? `/uploads/${userProfile._id}/cover/${userProfile.coverPhoto}` : `/uploads/profile/avatar.png`
+                    img(src=avatarSrc, alt="")
+                    if userProfile._id == user._id
+                        button.uploadImage(data-toggle="modal" data-target="#coverUpdateModal")
+                            i.fas.fa-camera
+                .avatar 
+                    - console.log(userProfile.activeStatus)
+
+                    - activeTxt = userProfile?.activeStatus ? "Active Now" : userProfile?.lastSeen?.toLocaleString() ?"Last seen:" + userProfile?.lastSeen?.toLocaleString() : "Not recently seen"
+
+                    -isActive = (user._id.toString() == userProfile._id.toString()) || activeTxt == "Active Now"
+                    
+                    - activeTxt = isActive ? "Active now" : activeTxt 
+                    .activeStatus(data-activeStatus= activeTxt, class=isActive && "active")
+
+                    - console.log(userProfile.activeStatus)
                     - avatarSrc = userProfile.avatarProfile ? `/uploads/${userProfile._id}/profile/${userProfile.avatarProfile}` : `/uploads/profile/avatar.png`
-                    img(alt="Avatar", src=avatarSrc)
+                    img(src=avatarSrc, alt="")
+                    if userProfile._id == user._id
+                        button.uploadImage(data-toggle="modal" data-target="#avatarUpdateModal")
+                            i.fas.fa-camera
 
 
+            
             
             .actionBTNs
                 if user.username !== userProfile.username
@@ -165,6 +183,6 @@ block bodyContent
     script. 
         const user = !{userJs}
         const tab = '!{tab}'
-        const profileUser = !{profileUserJs}
+        let profileUser = !{profileUserJs}
 
 

@@ -7,6 +7,7 @@ const signInDataValidationResult = (req, res, next) => {
     next();
   } else {
     try {
+      console.log(mappedErrors);
       return res.render("pages/auth/signIn", {
         user: req.body ? req.body : {},
         error: mappedErrors,
